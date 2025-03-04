@@ -68,10 +68,10 @@ jobs:
         chmod +x $DIY_P2_SH
         $GITHUB_WORKSPACE/$DIY_P2_SH        
         
-    - name: 下载ad核心
-      run: |
-        chmod +x $DIY_P3_SH
-        $GITHUB_WORKSPACE/$DIY_P3_SH       
+#    - name: 下载ad核心
+#      run: |
+#        chmod +x $DIY_P3_SH
+#        $GITHUB_WORKSPACE/$DIY_P3_SH       
 
     - name: 加载自定义配置
       run: |
@@ -199,11 +199,11 @@ jobs:
         files: ${{ env.FIRMWARE }}/*
               
         
-    - name: 清理Releases
-      uses: dev-drprasad/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 1
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#    - name: 清理Releases
+#      uses: dev-drprasad/delete-older-releases@master
+#      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+#      with:
+#        keep_latest: 1
+#        delete_tags: true
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
