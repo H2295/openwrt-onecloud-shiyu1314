@@ -15,25 +15,9 @@ echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >>
 
 #git clone -b master --depth 1 --single-branch https://github.com/vernesong/OpenClash package/xd/luci-app-openclash
 
-git clone -b master --depth 1 --single-branch https://github.com/jerrykuku/luci-theme-argon package/xd/luci-theme-argon
+#git clone -b master --depth 1 --single-branch https://github.com/jerrykuku/luci-theme-argon package/xd/luci-theme-argon
 
-git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/emortal
-git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/utils/mhz
-git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/network/services/dnsmasq 
-git_sparse_clone master https://github.com/immortalwrt/luci modules/luci-base
-git_sparse_clone master https://github.com/immortalwrt/luci modules/luci-mod-status
 
-./scripts/feeds update -a
-rm -rf feeds/packages/net/mosdns
-rm -rf feeds/luci/applications/luci-app-dockerman
-rm -rf feeds/luci/modules/luci-base
-rm -rf feeds/luci/modules/luci-mod-status
-rm -rf package/network/services/dnsmasq
-cp -rf emortal package
-cp -rf mhz package/utils/
-cp -rf luci-base feeds/luci/modules
-cp -rf luci-mod-status feeds/luci/modules/
-cp -rf dnsmasq package/network/services/
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
