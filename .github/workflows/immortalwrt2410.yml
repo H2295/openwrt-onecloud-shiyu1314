@@ -55,18 +55,18 @@ jobs:
       working-directory: /workdir
       run: |
         df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt 
+        git clone $REPO_URL -b $REPO_BRANCH immortalwrt
+        ln -sf /workdir/immortalwrt $GITHUB_WORKSPACE/immortalwrt 
         
     - name: 添加玩客云
       run: |
-        [ -e target ] && cp -rf target openwrt/          
+        [ -e target ] && cp -rf target immortalwrt/          
         
-#    - name: 加载自定义脚本
-#      run: |
-#        chmod +x $DIY_P1_SH
-#        cd openwrt
-#        $GITHUB_WORKSPACE/$DIY_P1_SH
+    - name: 加载自定义脚本
+      run: |
+        chmod +x $DIY_P1_SH
+        cd immortalwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
 
 #    - name: 下载oc内核
 #      run: |
@@ -80,14 +80,14 @@ jobs:
 
     - name: 加载自定义配置
       run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config                 
+        [ -e files ] && mv files immortalwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE immortalwrt/.config                 
 
         
     - name: 下载编译依赖
       id: package
       run: |
-        cd openwrt
+        cd immortalwrt
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
@@ -96,7 +96,7 @@ jobs:
     - name: 编译固件
       id: compile
       run: |
-        cd openwrt
+        cd immortalwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
@@ -114,10 +114,10 @@ jobs:
           curl -L -o ./uboot.img https://github.com/shiyu1314/u-boot-onecloud/releases/download/build-20230901-0443/eMMC.burn.img
           ./AmlImg unpack ./uboot.img burn/
           echo "::endgroup::"
-          gunzip openwrt/bin/targets/*/*/*.gz
-          diskimg=$(ls openwrt/bin/targets/*/*/*.img)
+          gunzip immortalwrt/bin/targets/*/*/*.gz
+          diskimg=$(ls immortalwrt/bin/targets/*/*/*.img)
           loop=$(sudo losetup --find --show --partscan $diskimg)
-          img_ext="openwrt.img"
+          img_ext="immortalwrt.img"
           img_mnt="xd"
           rootfs_mnt="img"
           boot_img=$1${img_ext}
@@ -149,15 +149,15 @@ jobs:
           PARTITION:boot:sparse:boot.simg
           PARTITION:rootfs:sparse:rootfs.simg
           EOF
-          prefix=$(ls openwrt/bin/targets/*/*/*.img | sed 's/\.img$//')
+          prefix=$(ls immortalwrt/bin/targets/*/*/*.img | sed 's/\.img$//')
           burnimg=${prefix}.burn.img
           ./AmlImg pack $burnimg burn/
-          for f in openwrt/bin/targets/*/*/*.burn.img; do
+          for f in immortalwrt/bin/targets/*/*/*.burn.img; do
             sha256sum "$f" >"${f}.sha"
             xz -9 --threads=0 --compress "$f"
           done
-          sudo rm -rf openwrt/bin/targets/*/*/*.img
-          sudo rm -rf openwrt/bin/targets/*/*/*.gz
+          sudo rm -rf immortalwrt/bin/targets/*/*/*.img
+          sudo rm -rf immortalwrt/bin/targets/*/*/*.gz
 
     - name: 查看磁盘使用情况
       if: (!cancelled())
@@ -167,7 +167,7 @@ jobs:
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        cd openwrt/bin/targets/*/*
+        cd immortalwrt/bin/targets/*/*
         rm -rf packages
         rm -rf *.buildinfo
         rm -rf profiles.json
@@ -180,7 +180,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: Immortalwrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
         
     - name: 生成Releases标签
