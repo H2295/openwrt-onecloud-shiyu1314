@@ -9,8 +9,6 @@ function git_sparse_clone() {
   cd .. && rm -rf $repodir
 }
 
-echo 'src-git dns https://github.com/sbwml/luci-app-mosdns' >>feeds.conf.default
-echo 'src-git xd https://github.com/shiyu1314/openwrt-packages' >>feeds.conf.default
 echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >> "feeds.conf.default"
 
 #git clone -b master --depth 1 --single-branch https://github.com/vernesong/OpenClash package/xd/luci-app-openclash
